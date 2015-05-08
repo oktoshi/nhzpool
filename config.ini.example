@@ -1,11 +1,11 @@
 [pool]
-nhzhost     = http://127.0.0.1:7776
-nhzhost2    = http://api.nhzcrypto.org:7776
+nxthost     = http://127.0.0.1:7876
+nxthost2    = http://timekoin1.funkymonkey.org:7876
 database    = /path/to/pool.db
 poolstart   = 11371711
 poolaccount = 123456789
-poolaccountrs = NHZ-4444-4444-4444-55555
+poolaccountrs = NXT-4444-4444-4444-55555
 poolphrase  = A-B_C\\D$E;F\"G'1.2;3/
 payoutlimit = 100
 feePercent  = 1
-port        = 8810
+port        = 8811

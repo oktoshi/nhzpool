@@ -33,7 +33,7 @@
   <div class="text-center">
 	<div class="page-header">
 		<h1>Unpaid Transactions:</h1>
-		<h4>Total Unpaid: <small>{{unpaid}} HZ</small></h4>
+		<h4>Total Unpaid: <small>{{unpaid}} NXT</small></h4>
 	</div>
 </div>
 <div class="table-responsive">

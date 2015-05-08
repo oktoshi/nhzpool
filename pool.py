@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-# author: pharesim@nhzcrypto.org
+# author: pharesim@nhzcrypto.org (original version)
+# nxt conversion:  tiker
 
 import json
 import urllib
@@ -21,7 +22,7 @@ def main():
     while True:
         startForging()
         getleased()
-        getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
+        getNew(json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
         time.sleep(100)
         payout()
         time.sleep(100)
@@ -34,21 +35,21 @@ def startForging():
     }
     opener = urllib2.build_opener(urllib2.HTTPHandler())
     data = urllib.urlencode(payload)
-    forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+    forging = json.loads(opener.open(config.get("pool", "nxthost")+'/nxt', data=data).read())
     if 'errorCode' in forging.keys():
         if forging['errorCode'] == 5:
             payload['requestType'] = 'startForging'
             data = urllib.urlencode(payload)
-            forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+            forging = json.loads(opener.open(config.get("pool", "nxthost")+'/nxt', data=data).read())
             print "Started forging"
 
     return True
 
 def getleased():
-    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccountRS")).read())
+    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccount&account="+config.get("pool", "poolaccountRS")).read())
     try:
         for lessor in leasedaccounts['lessorsRS']:
-            lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
+            lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccount&account="+lessor).read())
             balance = lessorAccount['guaranteedBalanceNQT']
             accountadd = lessorAccount['accountRS']
             heightfrom = lessorAccount['currentLeasingHeightFrom']
@@ -70,7 +71,7 @@ def getNew(newBlocks):
 		if 'blockIds' in newBlocks:
 			for block in newBlocks['blockIds']:
 				print block
-				blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost2")+"/nhz?requestType=getBlock&block="+block).read())
+				blockData = json.loads(urllib2.urlopen(config.get("pool", "nxthost2")+"/nxt?requestType=getBlock&block="+block).read())
 				c.execute("INSERT OR IGNORE INTO blocks (timestamp, block, totalfee, height) VALUES (?,?,?,?);", (blockData['timestamp'],block,blockData['totalFeeNQT'],blockData['height']))
                 
 				blockFee = float(blockData['totalFeeNQT'])
@@ -78,7 +79,7 @@ def getNew(newBlocks):
 				if blockFee > 0:
 					for (account, amount) in shares.items():
 						if account is not config.get("pool", "poolaccountRS"):
-							lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+account).read())
+							lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccount&account="+account).read())
 							heightfrom = lessorAccount['currentLeasingHeightFrom']
 							if heightfrom < blockheight:                                           
 								payout = math.floor(blockFee * (amount['percentage']/100))                     
@@ -107,7 +108,7 @@ def getTimestamp():
 
 
 def getShares():
-    poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccountRS")).read())
+    poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccount&account="+config.get("pool", "poolaccountRS")).read())
     totalAmount = 0
     if 'guaranteedBalanceNQT' in poolAccount:
         totalAmount  = float(poolAccount['guaranteedBalanceNQT'])
@@ -116,7 +117,7 @@ def getShares():
 
     if 'lessors' in poolAccount:
         for lessor in poolAccount['lessorsRS']:
-            lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
+            lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccount&account="+lessor).read())
             leasedAmount[lessor] = { 'amount': float(lessorAccount['guaranteedBalanceNQT']) }
             totalAmount += float(lessorAccount['guaranteedBalanceNQT'])
 
@@ -157,7 +158,7 @@ def payout():
             }
             opener = urllib2.build_opener(urllib2.HTTPHandler())
             data = urllib.urlencode(payload)
-            content = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+            content = json.loads(opener.open(config.get("pool", "nxthost")+'/nxt', data=data).read())
             if 'transaction' in content.keys():
                 c.execute("UPDATE accounts SET paid=? WHERE account=?;",(content['transaction'],str(account)))
                 c.execute("INSERT INTO payouts (account, fee, payment) VALUES (?,?,?);",(account, fee, payment))

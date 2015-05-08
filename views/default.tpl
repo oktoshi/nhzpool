@@ -32,13 +32,13 @@
   <div class="container">
   <div class="text-center">
     <div class="page-header">
-      <h1>Horizon Forging Pool</h1>
+      <h1>NXT Forging Pool</h1>
     </div>
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <h3>Pool Account: <small>{{pa}}</small></h3>
-   	<h4>Leased Amount: <small>{{nhzb}} HZ</small>&nbsp;Pool Fee is: <small>{{fee}}% </small></h4>
-	<h4>&nbsp;Pool Pay Out Limit is: <small>{{payoutlimit}} HZ</small>&nbspTotal Unpaid: <small>{{unpaid}} HZ</small></h4>
+   	<h4>Leased Amount: <small>{{nxtb}} NXT</small>&nbsp;Pool Fee is: <small>{{fee}}% </small></h4>
+	<h4>&nbsp;Pool Pay Out Limit is: <small>{{payoutlimit}} NXT</small>&nbspTotal Unpaid: <small>{{unpaid}} NXT</small></h4>
   </div> 
 </div>
 <div class="row">

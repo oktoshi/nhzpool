@@ -37,9 +37,9 @@
 <div class="row">
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 %if paid :
-  <h3>Paid <small>{{paid}} HZ</small></h3>
+  <h3>Paid <small>{{paid}} NXT</small></h3>
 %else :
-  <h3>Paid <small>0 HZ</small></h3>
+  <h3>Paid <small>0 NXT</small></h3>
 %end
   <div class="table-responsive">
   <table id="paid" class="display" cellspacing="0" width="100%">
@@ -77,9 +77,9 @@ $(document).ready(function() {
 
 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 %if unpaid : 
-  <h3>Unpaid <small>{{unpaid}} HZ</small></h3>
+  <h3>Unpaid <small>{{unpaid}} NXT</small></h3>
 %else :
-  <h3>Unpaid <small>0 HZ</small></h3>
+  <h3>Unpaid <small>0 NXT</small></h3>
 %end
     <div class="table-responsive">
 	<table id="unpaid" class="display" cellspacing="0" width="100%">

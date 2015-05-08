@@ -26,7 +26,7 @@ def blocktime():
     }
     opener = urllib2.build_opener(urllib2.HTTPHandler())
     data = urllib.urlencode(payload)
-    forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+    forging = json.loads(opener.open(config.get("pool", "nxthost")+'/nxt', data=data).read())
     getdl = forging["deadline"]
     dl = str(datetime.timedelta(seconds=getdl))
     return {'blocktime': dl}
@@ -54,10 +54,10 @@ def apiblocks(db):
 
 @route('/api/leased')
 def apileased():
-    getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
 
     try:
-        leasebal = getaccounts['effectiveBalanceNHZ']
+        leasebal = getaccounts['effectiveBalanceNXT']
     except:
         leasebal = 0
 
@@ -73,7 +73,7 @@ def apipayouts(db):
 @route('/api/paid')
 def apipaid(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT  datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
+    c = db.execute("SELECT datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
@@ -84,14 +84,14 @@ def apiunpaid(db):
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
     
-@route('/api/userunpaid/:user#NHZ-[0-9A-Z-]+#')
+@route('/api/userunpaid/:user#NXT-[0-9A-Z-]+#')
 def apiuserunpaid(db, user):
     response.headers['Cache-Control'] = 'public, max-age=600'
     c = db.execute("SELECT datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
-@route('/api/userpaid/:user#NHZ-[0-9A-Z-]+#')
+@route('/api/userpaid/:user#NXT-[0-9A-Z-]+#')
 def apiuserpaid(db, user):
     response.headers['Cache-Control'] = 'public, max-age=600'
     c = db.execute("SELECT datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchall()
@@ -114,13 +114,13 @@ def default(db):
             unpaid = math.trunc(float(r)/100000000)
         except TypeError:
             unpaid = 0
-    getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nxthost")+"/nxt?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
     try:
-        leasebal = getaccounts['effectiveBalanceNHZ']
+        leasebal = getaccounts['effectiveBalanceNXT']
     except KeyError:
         leasebal = 0
         
-    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal, payoutlimit=payoutlimit, unpaid=unpaid)
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nxtb=leasebal, payoutlimit=payoutlimit, unpaid=unpaid)
     return output
 
 @route('/static/:path#.+#', name='static')
